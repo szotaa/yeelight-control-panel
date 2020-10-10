@@ -1,3 +1,3 @@
 package pl.szotaa.ycp.config
 
-case class YcpConfig (serverConfig: ServerConfig)
+case class YcpConfig (server: ServerConfig, led: LedConfig)

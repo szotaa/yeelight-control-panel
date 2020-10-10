@@ -12,6 +12,7 @@ val circeConfigVersion = "0.8.0"
 libraryDependencies ++= Seq(
   "org.typelevel"     %% "cats-core"                    % catsVersion,
   "co.fs2"            %% "fs2-core"                     % fs2Version,
+  "co.fs2"            %% "fs2-reactive-streams"         % fs2Version,
   "co.fs2"            %% "fs2-io"                       % fs2Version,
   "org.http4s"        %% "http4s-blaze-server"          % http4sVersion,
   "org.http4s"        %% "http4s-circe"                 % http4sVersion,
