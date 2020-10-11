@@ -5,11 +5,11 @@ import pl.szotaa.ycp.domain.CommandJson._
 
 class LedControlService[F[_]](ledClient: LedClientAlgebra[F]) {
 
-  def setRgb(rgb: Int, effect: String, duration: Int): F[Unit] =
-    ledClient.write(buildCommandAsJson(SetRgb(rgb, effect, duration)))
+  def command(method: Method): F[String] =
+    ledClient.write(buildCommandAsJson(method))
 
   //TODO: id!!
-  private def buildCommandAsJson(method: Method): Array[Byte] = Command(1, method).asJson.noSpaces.getBytes
+  private def buildCommandAsJson(method: Method): Array[Byte] = (Command(1, method).asJson.noSpaces + "\r\n").getBytes
 }
 
 object LedControlService {

@@ -3,16 +3,23 @@ package pl.szotaa.ycp.infrastructure.tcp
 import java.net.InetSocketAddress
 
 import cats.effect.{Blocker, Concurrent, ContextShift, Resource}
-import fs2.Chunk
+import cats.syntax.all._
 import fs2.io.tcp.{Socket, SocketGroup}
+import fs2.{Chunk, Stream, text}
 import pl.szotaa.ycp.domain.LedClientAlgebra
 
 
 //TODO: error handling, logging, retrieving response
 class TcpClient[F[_]: Concurrent: ContextShift](resource: Resource[F, Socket[F]]) extends LedClientAlgebra[F] {
 
-  override def write(message: Array[Byte]): F[Unit] = resource.use {
-    client => client.write(Chunk.bytes(message))
+  override def write(message: Array[Byte]): F[String] = resource.use {
+    client => client.write(Chunk.bytes(message)) >> client.reads(8192)
+      .through(text.utf8Decode)
+      .through(text.lines)
+      .interleave(Stream.constant("\n"))
+      .head
+      .compile
+      .string
   }
 }
 

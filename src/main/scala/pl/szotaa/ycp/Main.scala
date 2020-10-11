@@ -7,7 +7,7 @@ import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.{Router, Server}
 import pl.szotaa.ycp.config.YcpConfig
 import pl.szotaa.ycp.domain._
-import pl.szotaa.ycp.infrastructure.endpoint.LedControlEndpoints
+import pl.szotaa.ycp.infrastructure.endpoint.LedCommandEndpoints
 import pl.szotaa.ycp.infrastructure.tcp.TcpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,7 +20,7 @@ object Main extends IOApp {
     tcpClient = TcpClient(conf.led.host, conf.led.port)
     ledService = LedControlService.apply(tcpClient)
     httpApp = Router (
-      "/control" -> LedControlEndpoints.endpoints[F](ledService)
+      "/command" -> LedCommandEndpoints.endpoints[F](ledService)
     ).orNotFound
     server <- BlazeServerBuilder[F](global)
       .bindHttp(conf.server.port, conf.server.host)
